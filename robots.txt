@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /home/
+Disallow: /lp/
+sitemap: http:www.viewlift.com/sitemap.xml
