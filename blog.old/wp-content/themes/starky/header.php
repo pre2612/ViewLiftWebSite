@@ -1,0 +1,151 @@
+<?php
+/**
+ * Starky Header
+ *
+ * Displays all of the <head> section and everything up till the end of header>
+ *
+ */
+?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+    <head>
+		<!-- Meta Tags -->
+        <meta charset="<?php bloginfo( 'charset' ); ?>" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+		<!-- PAGE TITLE -->
+		<?php if (!defined('WPSEO_VERSION')) { ?><title><?php // if there is no WordPress SEO plugin activated
+	    wp_title(' | ', true, 'right');echo get_bloginfo('name').' | '.get_bloginfo('description'); // or some WordPress default ?></title>
+		  
+		<?php }else { ?>
+		<title>
+		<?php // WordPress SEO plugin active
+		wp_title(); ?>
+		</title>
+		<?php } ?>
+		
+        <link rel="profile" href="http://gmpg.org/xfn/11" />
+        <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
+  
+	<?php 
+	global $starky_options;
+	$str_options = get_option('starky_options'); ?>
+	
+		<!--favicon icon-->
+		<?php 
+		if (isset($str_options['favicon']) && $str_options['favicon']['url'] != "") { 
+		$str_favicon = $str_options['favicon'];	?>
+		<link rel="shortcut icon" href="<?php echo $str_favicon['url']; ?>" type="image/x-icon" />		
+		<?php } ?>
+
+		<?php 
+		if (isset($str_options['iphone_icon']) && $str_options['iphone_icon']['url'] != "") { 
+		$str_iphone_icon = $str_options['iphone_icon'];
+		?>
+        <link rel="apple-touch-icon-precomposed" href="<?php echo $str_iphone_icon['url']; ?>">
+        <?php } ?>
+       
+        <?php 
+		if (isset($str_options['ipad_icon']) && $str_options['ipad_icon']['url'] != "") {
+		$str_ipad_icon = $str_options['ipad_icon'];
+		?>
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo $str_ipad_icon['url']; ?>">
+        <?php } ?>
+		
+	<!--[if lt IE 9]>
+	<script src="<?php echo get_template_directory_uri(); ?>/js/html5.js"></script>
+	<![endif]-->
+	<!--[if IE]>
+        <style>	
+            .animated {
+                opacity: 1 !important;
+                }
+          </style>
+	<![endif]-->
+        <?php wp_head(); ?>
+    </head>
+
+<body <?php body_class(); ?> data-smooth-scrolling="<?php if (isset($str_options['nice_scroll'])){ echo $str_options['nice_scroll']; } ?>">	
+<?php if (isset($str_options['preloader']) && $str_options['preloader'] == "1") { ?>
+<!-- Preloader -->
+<div id="preloader">
+  <div id="status">
+    <div class="main"> 
+      <!-- the component -->
+      <ul class="bokeh">
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /Preloader --> 
+<?php } ?>
+
+<?php
+global $post;
+$str_page_template='';
+$str_page_template = get_post_meta( $post->ID, '_wp_page_template', true );
+if ( is_page_template('homepage-template.php') || $str_page_template == 'starky/homepage-template.php' ) {
+$str_hide_header ='ha-header-hide';
+$str_wrap_class ='';
+}else{
+$str_hide_header ='ha-header-show';
+$str_wrap_class ='inner';
+}
+?>
+
+<!-- START PAGE WRAP -->    
+<div class="page-wrap <?php echo $str_wrap_class; ?>">
+
+<!-- header -->
+<header id="header-menu" class="ha-header <?php echo $str_hide_header; ?> ">
+  <div class="ha-header-perspective">
+    <div class="row">
+      <div class="navbar" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <div class="container">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> <i class="fa fa-bars bars"></i> </button>
+              <h3 class="pull-left nav-logo"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			  
+			  <?php
+                
+				if($str_options['use-image-logo']){
+               
+                $str_logo = $str_options['logo'];
+				if($str_logo['url']){ echo '<img  class="logo" alt="'. get_bloginfo('name') .'" src="' . $str_logo['url'] . '" />';}
+					
+				 } else { echo get_bloginfo('name'); } 
+				 ?>
+			  
+			 </a></h3>
+            </div>
+          </div>
+          <div class="collapse navbar-collapse">
+		  		  
+            <ul class="nav navbar-nav pull-right">
+             <?php 
+			 if(has_nav_menu('main_nav')) {
+                wp_nav_menu(array(
+                  'theme_location' => 'main_nav',
+                  'container' => '',
+				  'items_wrap' => '%3$s' ,
+                  'walker' => new starky_walker(),
+                  'depth' => 0 
+                )); 
+				}
+							else {
+								echo '<h4>'. __( 'Main Menu Not Assigned!', STARKY_THEME_NAME) .'</h4>';
+							}
+              ?>
+            </ul>
+          </div>
+          <!--/.nav-collapse --> 
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- /header -->
+<div class="clearfix"></div>
